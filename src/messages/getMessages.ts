@@ -3,7 +3,9 @@ import { Message } from './model';
 
 export async function getMessages(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const messages = await Message.find({}, null, { lean: true });
+    if (!req.user) throw Error('Anonymous request');
+    const userId = (req.user as any)._id;
+    const messages = await Message.find({ $or: [{ emitter: userId }, { target: userId }] }, null, { lean: true });
     res.json(messages);
   } catch (error) {
     next(error);
