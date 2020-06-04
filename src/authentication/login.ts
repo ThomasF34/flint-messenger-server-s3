@@ -7,7 +7,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     if (!user) return res.status(401).send();
     req.logIn(user, (err) => {
       if (err) return next(err);
-      return res.send(user);
+      res.json(user.getSafeProfile());
     });
   })(req, res, next);
 }

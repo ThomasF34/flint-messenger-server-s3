@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { ErrorRequestHandler } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -8,9 +8,10 @@ import { authenticationInitialize, authenticationRequired, authenticationSession
 import { getMessages, postMessage } from './messages';
 import { getProfile, getUsers, patchProfile, register } from './users';
 import { patchConversationSeen } from './users/patchConversationSeen';
+import { deleteProfile } from './users/deleteProfile';
 
 export function createServer(config: IConfig): express.Express {
-  const { session_secret } = config;
+  const { express_debug, session_secret } = config;
 
   const app = express();
 
@@ -28,8 +29,18 @@ export function createServer(config: IConfig): express.Express {
   app.get('/profile', authenticationRequired, getProfile);
   app.patch('/profile', authenticationRequired, patchProfile);
   app.patch('/profile/conversation-seen', authenticationRequired, patchConversationSeen);
+  app.delete('/profile', authenticationRequired, deleteProfile);
   app.get('/messages', authenticationRequired, getMessages);
   app.post('/messages', authenticationRequired, postMessage);
+
+  app.use(function (err, req, res) {
+    if (!express_debug) {
+      res.status(500).send('Oups');
+      return;
+    }
+    console.error(err.stack);
+    res.status(500).send(err);
+  } as ErrorRequestHandler);
 
   return app;
 }

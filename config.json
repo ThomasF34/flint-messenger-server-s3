@@ -1,5 +1,6 @@
 {
   "PORT": null,
+  "express_debug": false,
   "mongo_host": null,
   "mongo_user": null,
   "mongo_pass": null,

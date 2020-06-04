@@ -7,6 +7,7 @@ const defaultConfig = JSON.parse(readFileSync(resolve(__dirname, '../config.json
 
 export interface IConfig {
   PORT: number;
+  express_debug: boolean;
   mongo_host: string;
   mongo_user: string;
   mongo_pass: string;

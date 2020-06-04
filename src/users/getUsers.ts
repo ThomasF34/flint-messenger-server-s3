@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { User } from './model';
 
-export async function getUsers(req: Request, res: Response): Promise<void> {
+export async function getUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const users = await User.find({}, '_id lastName firstName status').lean();
     res.json(users);
   } catch (error) {
-    res.status(500).send();
+    next(error);
   }
 }
