@@ -1,7 +1,8 @@
 import { config } from 'dotenv';
-import * as defaultConfig from '../config.json';
+import { readFileSync } from 'fs';
 
 config();
+const defaultConfig = JSON.parse(readFileSync('../config.json').toString());
 
 export interface IConfig {
   PORT: number;

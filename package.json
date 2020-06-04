@@ -15,6 +15,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "start": "node ./dist/index.js",
     "prebuild": "rimraf dist",
     "build": "tsc --project tsconfig.prod.json",
     "test": "jest",
