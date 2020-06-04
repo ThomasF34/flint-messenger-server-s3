@@ -1,0 +1,9 @@
+{
+  "PORT": null,
+  "mongo_host": null,
+  "mongo_user": null,
+  "mongo_pass": null,
+  "mongo_database": null,
+  "mongo_debug": false,
+  "session_secret": null
+}

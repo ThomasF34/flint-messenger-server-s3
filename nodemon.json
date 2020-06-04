@@ -1,0 +1,14 @@
+{
+    "ignore": [
+        ".git",
+        "node_modules",
+        "**/*.spec.ts"
+    ],
+    "watch": [
+        "src"
+    ],
+    "ext": "ts",
+    "exec": "npm run dev-restart",
+    "verbose": false,
+    "delay": "1500"
+}

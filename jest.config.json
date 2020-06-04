@@ -1,0 +1,10 @@
+{
+  "clearMocks": true,
+  "preset": "ts-jest",
+  "roots": ["src"],
+  "testEnvironment": "node",
+  "reporters": ["default"],
+  "collectCoverage": true,
+  "coverageDirectory": "./coverage",
+  "coverageReporters": ["text-summary"]
+}
