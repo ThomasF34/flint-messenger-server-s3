@@ -7,6 +7,7 @@ import { IConfig } from './config';
 import { authenticationInitialize, authenticationRequired, authenticationSession, login } from './authentication';
 import { getMessages, postMessage } from './messages';
 import { getProfile, getUsers, patchProfile, register } from './users';
+import { patchConversationSeen } from './users/patchConversationSeen';
 
 export function createServer(config: IConfig): express.Express {
   const { session_secret } = config;
@@ -26,6 +27,7 @@ export function createServer(config: IConfig): express.Express {
   app.get('/users', authenticationRequired, getUsers);
   app.get('/profile', authenticationRequired, getProfile);
   app.patch('/profile', authenticationRequired, patchProfile);
+  app.patch('/profile/conversation-seen', authenticationRequired, patchConversationSeen);
   app.get('/messages', authenticationRequired, getMessages);
   app.post('/messages', authenticationRequired, postMessage);
 

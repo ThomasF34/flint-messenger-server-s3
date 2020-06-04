@@ -7,6 +7,8 @@ export interface IProfile extends Document {
   firstName: string;
   status: string;
   updatedAt: string;
+  conversationsSeen: { [conversationId: string]: string };
+  updateSeen(conversationId: string, seenDate: string): void;
   getSafeProfile(): ISafeProfile;
   setPassword(password: string): void;
   validatePassword(password: string): boolean;
@@ -14,7 +16,7 @@ export interface IProfile extends Document {
 
 export type IUser = Pick<IProfile, '_id' | 'lastName' | 'firstName' | 'status' | 'updatedAt'>;
 
-export type ISafeProfile = IUser & Pick<IProfile, 'email'>;
+export type ISafeProfile = IUser & Pick<IProfile, 'email' | 'conversationsSeen'>;
 
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
@@ -23,6 +25,7 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   status: { type: String, required: true, default: 'Offline' },
   updatedAt: { type: Date },
+  conversationsSeen: {},
 });
 
 userSchema.methods.setPassword = function (password: string): void {
@@ -34,8 +37,13 @@ userSchema.methods.validatePassword = function (password: string): boolean {
 };
 
 userSchema.methods.getSafeProfile = function (): ISafeProfile {
-  const { _id, email, lastName, firstName, status, updatedAt } = this;
-  return { _id, email, lastName, firstName, status, updatedAt };
+  const { _id, email, lastName, firstName, status, updatedAt, conversationsSeen } = this;
+  return { _id, email, lastName, firstName, status, updatedAt, conversationsSeen };
+};
+
+userSchema.methods.updateSeen = function (conversationId: string, seenDate: string): void {
+  this.conversationsSeen = { ...this.conversationsSeen, [conversationId]: seenDate };
+  this.markModified('conversationsSeen');
 };
 
 export interface IProfileModel extends Model<IProfile> {
