@@ -9,7 +9,7 @@ passport.use(
       const user = await User.findOne({ email: username });
       if (user) {
         const isValid = user.validatePassword(password);
-        if (isValid) return done(null, user.getSafeProfile());
+        if (isValid) return done(null, user._id);
       }
       return done(null, false);
     } catch (error) {
@@ -23,12 +23,7 @@ passport.serializeUser(({ _id }: { _id: string }, done) => {
 });
 
 passport.deserializeUser(async (_id, done) => {
-  try {
-    const user = await User.findOne({ _id }, '_id');
-    done(undefined, user && user.getSafeProfile());
-  } catch (error) {
-    done(error);
-  }
+  done(undefined, { _id });
 });
 
 export const authenticationInitialize = (): Handler => passport.initialize();
