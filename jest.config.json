@@ -6,5 +6,5 @@
   "reporters": ["default"],
   "collectCoverage": true,
   "coverageDirectory": "./coverage",
-  "coverageReporters": ["text-summary"]
+  "coverageReporters": ["text-summary", "html"]
 }
