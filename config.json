@@ -6,5 +6,6 @@
   "mongo_pass": null,
   "mongo_database": null,
   "mongo_debug": false,
+  "session_cookie_name": "sid",
   "session_secret": null
 }

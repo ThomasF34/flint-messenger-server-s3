@@ -7,6 +7,7 @@ export interface IProfile extends Document {
   firstName: string;
   status: string;
   updatedAt: string;
+  socket: string;
   conversationsSeen: { [conversationId: string]: string };
   updateSeen(conversationId: string, seenDate: string): void;
   getSafeProfile(): ISafeProfile;
@@ -26,6 +27,7 @@ const userSchema = new Schema({
   status: { type: String, required: true, default: 'Offline' },
   updatedAt: { type: Date },
   conversationsSeen: {},
+  socket: { type: String },
 });
 
 userSchema.methods.setPassword = function (password: string): void {
