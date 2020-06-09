@@ -47,7 +47,7 @@ export function createExpressApp(config: IConfig, sessionStore: Store): express.
       return;
     }
     console.error(err.stack);
-    res.status(500).send(err);
+    // res.status(500).send(err);
   } as ErrorRequestHandler);
 
   return app;
