@@ -47,6 +47,7 @@ async function connect(socket: Socket): Promise<void> {
   socket.on('call-request', (data) => forward(socket, _id, 'call-request', data));
   socket.on('call-left', (data) => forward(socket, _id, 'call-left', data));
   socket.on('call-accepted', (data) => forward(socket, _id, 'call-accepted', data));
+  socket.on('call-ice-candidate', (data) => forward(socket, _id, 'call-ice-candidate', data));
 
   io.emit('user-update', user.getSafeProfile());
 }
