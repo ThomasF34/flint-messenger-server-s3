@@ -56,7 +56,8 @@ async function disconnect(socket: Socket, _id: string): Promise<void> {
 }
 
 async function forward(socket: Socket, _id: string, event: string, data: any): Promise<void> {
-  const { offer, answer, ...info } = data;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { offer, answer, candidate, ...info } = data;
   console.log(`Event forwarded: ${event}`);
   console.log(info);
   const targetUser = await User.findById(data.target);
