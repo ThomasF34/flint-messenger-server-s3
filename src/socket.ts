@@ -7,8 +7,11 @@ import { Store } from 'express-session';
 import cookieParser from 'cookie-parser';
 import { User } from './users';
 
-const actives = new Set();
+const actives = new Set<Socket>();
+
 export let io: SocketServer;
+
+const EVENTS_TO_FORWARD = ['call-request', 'call-left', 'call-accepted', 'call-established', 'call-ice-candidate'];
 
 export function initializeSockets(config: IConfig, httpServer: HTTPServer, sessionStore: Store): SocketServer {
   const { session_cookie_name, session_secret } = config;
@@ -27,59 +30,51 @@ export function initializeSockets(config: IConfig, httpServer: HTTPServer, sessi
 }
 
 async function connect(socket: Socket): Promise<void> {
-  actives.add(socket);
-
   const _id: string = (socket.request.user as any)._id;
+  actives.add(socket);
   const user = await User.findById(_id);
-  if (!user) throw Error('User not found');
+  if (!user) {
+    closeSocket(socket);
+    return exitUserNotFound(_id);
+  }
   user.socket = socket.id;
   user.status = 'available';
   await user.save();
-
-  console.log('=========================================== HERE');
-  console.log(socket.request.user);
-  socket.on('pping', (data) => {
-    console.log('=========================================== IN HERE');
-    console.log(data);
-  });
-  socket.on('disconnect', () => disconnect(socket));
-
-  socket.on('call-request', (data) => forward(socket, _id, 'call-request', data));
-  socket.on('call-left', (data) => forward(socket, _id, 'call-left', data));
-  socket.on('call-accepted', (data) => forward(socket, _id, 'call-accepted', data));
-  socket.on('call-established', (data) => forward(socket, _id, 'call-established', data));
-  socket.on('call-ice-candidate', (data) => forward(socket, _id, 'call-ice-candidate', data));
-
+  socket.on('disconnect', () => disconnect(socket, _id));
+  EVENTS_TO_FORWARD.forEach((event) => socket.on(event, (data) => forward(socket, _id, event, data)));
   io.emit('user-update', user.getSafeProfile());
 }
 
-async function disconnect(socket: Socket): Promise<void> {
-  console.log('=========================================== THERE');
-  actives.delete(socket);
-  // TODO
-
-  const user = await User.findById((socket.request.user as any)._id);
-  if (!user) throw Error('User not found');
+async function disconnect(socket: Socket, _id: string): Promise<void> {
+  closeSocket(socket);
+  const user = await User.findById(_id);
+  if (!user) return exitUserNotFound(_id);
   delete user.socket;
   user.status = 'offline';
   await user.save();
-
   io.emit('user-update', user.getSafeProfile());
 }
 
-async function forward(socket: Socket, emitter: string, event: string, data: any): Promise<void> {
-  console.log(`Event forwarded: ${event}`);
+async function forward(socket: Socket, _id: string, event: string, data: any): Promise<void> {
   const { offer, answer, ...info } = data;
+  console.log(`Event forwarded: ${event}`);
   console.log(info);
   const targetUser = await User.findById(data.target);
-  if (!targetUser) {
-    console.log('User not found');
-    return;
-  }
+  if (!targetUser) return exitUserNotFound(data.target);
   const target = targetUser?.socket;
-  if (!target) {
-    console.log('User not online');
-    return;
-  }
-  socket.to(target).emit(event, { ...data, emitter });
+  if (!target) return exitUserOffline();
+  socket.to(target).emit(event, { ...data, emitter: _id });
+}
+
+function exitUserNotFound(_id: string): void {
+  console.log(`User not found: ${_id}`);
+}
+
+function exitUserOffline(): void {
+  console.log('User offline');
+}
+
+function closeSocket(socket: Socket): void {
+  socket.disconnect();
+  actives.delete(socket);
 }
