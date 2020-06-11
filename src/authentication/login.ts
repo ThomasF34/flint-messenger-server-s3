@@ -1,13 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
+import { User } from '../users';
 
 export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
-  await passport.authenticate('local', function (err, user) {
+  await passport.authenticate('local', function (err, reqUser) {
     if (err) return next(err);
-    if (!user) return res.status(401).send();
-    req.logIn(user, (err) => {
+    if (!reqUser) return res.status(401).send();
+    req.logIn(reqUser, async (err) => {
       if (err) return next(err);
-      res.json(user);
+      const user = await User.findById(reqUser);
+      if (!user) throw Error('User not found');
+      res.json(user.getSafeProfile());
     });
   })(req, res, next);
 }

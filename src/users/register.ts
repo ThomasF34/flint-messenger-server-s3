@@ -9,7 +9,7 @@ export async function register(req: Request, res: Response, next: NextFunction):
     await user.save();
     req.logIn(user, (err) => {
       if (err) return next(err);
-      res.json(user);
+      res.json(user.getSafeProfile());
     });
   } catch (error) {
     next(error);
