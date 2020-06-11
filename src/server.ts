@@ -4,7 +4,13 @@ import cors from 'cors';
 import helmet from 'helmet';
 import session, { Store } from 'express-session';
 import { IConfig } from './config';
-import { authenticationInitialize, authenticationRequired, authenticationSession, login } from './authentication';
+import {
+  authenticationInitialize,
+  authenticationRequired,
+  authenticationSession,
+  login,
+  logout,
+} from './authentication';
 import { getMessages, postMessage } from './messages';
 import { getProfile, getUsers, patchProfile, register } from './users';
 import { patchConversationSeen } from './users/patchConversationSeen';
@@ -47,6 +53,7 @@ export function createExpressApp(config: IConfig, sessionStore: Store): express.
   app.delete('/profile', authenticationRequired, deleteProfile);
   app.get('/messages', authenticationRequired, getMessages);
   app.post('/messages', authenticationRequired, postMessage);
+  app.post('/logout', logout);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   app.use(((err, req, res, next) => {

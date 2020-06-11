@@ -6,6 +6,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
   await passport.authenticate('local', function (err, reqUser) {
     if (err) return next(err);
     if (!reqUser) return res.status(401).send();
+    console.log(`Req user: ${reqUser}`);
     req.logIn(reqUser, async (err) => {
       if (err) return next(err);
       const user = await User.findById(reqUser);
