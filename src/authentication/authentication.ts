@@ -1,11 +1,22 @@
 import { Handler } from 'express';
+import joi from '@hapi/joi';
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import { User } from '../users/model';
 
+const schema = joi.object({
+  username: joi
+    .string()
+    .pattern(/^[a-z0-9-.]+@[a-z0-9-.]+\.[a-z]+$/i)
+    .required(),
+  password: joi.string().max(20),
+});
+
 passport.use(
   new Strategy(async (username, password, done) => {
     try {
+      const { error } = schema.validate({ username, password });
+      if (error) throw error;
       const user = await User.findOne({ email: username });
       console.log(`user found: ${user?.getSafeProfile()}`);
       if (user) {
