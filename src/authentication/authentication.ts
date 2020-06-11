@@ -16,15 +16,12 @@ passport.use(
   new Strategy(async (username, password, done) => {
     try {
       const { error } = schema.validate({ username, password });
-      if (error) throw error;
+      if (error) return done(null, false);
       const user = await User.findOne({ email: username });
-      console.log(`user found: ${user?.getSafeProfile()}`);
-      if (user) {
-        const isValid = user.validatePassword(password);
-        console.log(`user password is valid: ${isValid}`);
-        if (isValid) return done(null, user._id);
-      }
-      return done(null, false);
+      if (!user) return done(null, false);
+      const isValid = user.validatePassword(password);
+      if (!isValid) return done(null, false);
+      return done(null, user._id);
     } catch (error) {
       done(error);
     }
