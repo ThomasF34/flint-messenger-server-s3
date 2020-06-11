@@ -15,6 +15,13 @@ export function createExpressApp(config: IConfig, sessionStore: Store): express.
 
   const app = express();
 
+  app.use((req, res, next) => {
+    if (req.secure || express_debug) {
+      next();
+    } else {
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
   app.use(morgan('combined'));
   app.use(cors({ origin: true, credentials: true }));
   app.use(helmet());
@@ -41,14 +48,11 @@ export function createExpressApp(config: IConfig, sessionStore: Store): express.
   app.get('/messages', authenticationRequired, getMessages);
   app.post('/messages', authenticationRequired, postMessage);
 
-  app.use(function (err, req, res) {
-    if (!express_debug) {
-      res.status(500).send('Oups');
-      return;
-    }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  app.use(((err, req, res, next) => {
     console.error(err.stack);
-    // res.status(500).send(err);
-  } as ErrorRequestHandler);
+    res.status?.(500).send(!express_debug ? 'Oups' : err);
+  }) as ErrorRequestHandler);
 
   return app;
 }
