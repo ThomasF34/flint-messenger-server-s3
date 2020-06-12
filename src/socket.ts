@@ -13,9 +13,11 @@ export let io: SocketServer;
 
 const EVENTS_TO_FORWARD = [
   'call-peering-request',
+  'call-peering-accepted',
   'call-peering-offer',
   'call-peering-answer',
   'call-peering-ice-candidate',
+  'call-additional-peering-required',
   'call-left',
 ];
 
