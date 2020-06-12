@@ -21,13 +21,6 @@ export function createExpressApp(config: IConfig, sessionStore: Store): express.
 
   const app = express();
 
-  app.use((req, res, next) => {
-    if (req.secure || express_debug) {
-      next();
-    } else {
-      res.redirect('https://' + req.headers.host + req.url);
-    }
-  });
   app.use(morgan('combined'));
   app.use(cors({ origin: true, credentials: true }));
   app.use(helmet());
