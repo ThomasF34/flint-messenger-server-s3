@@ -5,7 +5,7 @@ export async function getMessages(req: Request, res: Response, next: NextFunctio
   try {
     if (!req.user) throw Error('Anonymous request');
     const userId = (req.user as any)._id;
-    const messages = await Message.find({ $or: [{ emitter: userId }, { target: userId }] }, null, { lean: true });
+    const messages = await Message.find({ $or: [{ emitter: userId }, { targets: userId }] }, null, { lean: true });
     res.json(messages);
   } catch (error) {
     next(error);

@@ -1,9 +1,9 @@
 import { model, Schema, Document } from 'mongoose';
 
-export interface IProfile extends Document {
+export interface IMessage extends Document {
   conversationId: string;
   emitter: string;
-  target: string;
+  targets: string[];
   content: string;
   createdAt: string;
 }
@@ -11,7 +11,7 @@ export interface IProfile extends Document {
 const messageSchema = new Schema({
   conversationId: { type: String, required: true },
   emitter: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-  target: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  targets: { type: [{ type: Schema.Types.ObjectId, ref: 'User' }], required: true },
   content: { type: String, required: true },
   createdAt: { type: Date },
 });
@@ -20,4 +20,4 @@ messageSchema.pre('save', function () {
   this.set({ createdAt: new Date() });
 });
 
-export const Message = model<IProfile>('Message', messageSchema);
+export const Message = model<IMessage>('Message', messageSchema);

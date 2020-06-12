@@ -11,7 +11,13 @@ const actives = new Set<Socket>();
 
 export let io: SocketServer;
 
-const EVENTS_TO_FORWARD = ['call-request', 'call-left', 'call-accepted', 'call-established', 'call-ice-candidate'];
+const EVENTS_TO_FORWARD = [
+  'call-peering-request',
+  'call-peering-offer',
+  'call-peering-answer',
+  'call-peering-ice-candidate',
+  'call-left',
+];
 
 export function initializeSockets(config: IConfig, httpServer: HTTPServer, sessionStore: Store): SocketServer {
   const { session_cookie_name, session_secret } = config;
