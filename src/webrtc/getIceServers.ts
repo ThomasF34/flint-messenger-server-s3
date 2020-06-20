@@ -10,7 +10,6 @@ export function getIceServersFactory(config: IConfig): Handler {
     try {
       const iceServersConfig = await client.tokens.create();
       res.json(iceServersConfig);
-      console.log(iceServersConfig);
     } catch (error) {
       next(error);
     }
