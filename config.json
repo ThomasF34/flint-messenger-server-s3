@@ -7,5 +7,7 @@
   "mongo_database": null,
   "mongo_debug": false,
   "session_cookie_name": "sid",
-  "session_secret": null
+  "session_secret": null,
+  "twilio_auth_sid": null,
+  "twilio_auth_token": null
 }

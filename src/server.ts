@@ -15,6 +15,7 @@ import { getMessages, postMessage } from './messages';
 import { getProfile, getUsers, patchProfile, register } from './users';
 import { patchConversationSeen } from './users/patchConversationSeen';
 import { deleteProfile } from './users/deleteProfile';
+import { getIceServersFactory } from './webrtc';
 
 export function createExpressApp(config: IConfig, sessionStore: Store): express.Express {
   const { express_debug, session_cookie_name, session_secret } = config;
@@ -46,6 +47,7 @@ export function createExpressApp(config: IConfig, sessionStore: Store): express.
   app.delete('/profile', authenticationRequired, deleteProfile);
   app.get('/messages', authenticationRequired, getMessages);
   app.post('/messages', authenticationRequired, postMessage);
+  app.get('/webrtc/ice-servers', authenticationRequired, getIceServersFactory(config));
   app.post('/logout', logout);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
