@@ -41,7 +41,7 @@ export function createExpressApp(config: IConfig, sessionStore: Store): express.
   app.get('/messages', authenticationRequired, getMessages);
   app.post('/messages', authenticationRequired, postMessage);
 
-  app.use(function (err, req, res) {
+  app.use(function (err, _req, res, _next) {
     if (!express_debug) {
       res.status(500).send('Oups');
       return;

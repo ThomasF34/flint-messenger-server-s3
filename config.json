@@ -1,11 +1,11 @@
 {
-  "PORT": null,
-  "express_debug": false,
-  "mongo_host": null,
-  "mongo_user": null,
-  "mongo_pass": null,
-  "mongo_database": null,
+  "PORT": 3000,
+  "express_debug": true,
+  "mongo_host": "localhost",
+  "mongo_user": "flint",
+  "mongo_pass": "myPwd",
+  "mongo_database": "flint-messenger",
   "mongo_debug": false,
   "session_cookie_name": "sid",
-  "session_secret": null
+  "session_secret": "a_highly_secret_key"
 }
