@@ -50,8 +50,7 @@ export function createExpressApp(config: IConfig, sessionStore: Store): express.
   app.get('/webrtc/ice-servers', authenticationRequired, getIceServersFactory(config));
   app.post('/logout', logout);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  app.use(((err, req, res, next) => {
+  app.use(((err, _req, res, _next) => {
     console.error(err.stack);
     res.status?.(500).send(!express_debug ? 'Oups' : err);
   }) as ErrorRequestHandler);
